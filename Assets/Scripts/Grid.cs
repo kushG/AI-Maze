@@ -12,7 +12,9 @@ public class Grid : MonoBehaviour
 	public Transform CellPrefab;
 	public Transform BoundaryPrefab;
 	public Transform FPSController;
-	Transform[,] grid;
+    public Transform bldgPrefab;
+    public Texture roadText;
+    Transform[,] grid;
 	bool spawned = false;
 
 	// Use this for initialization
@@ -159,16 +161,29 @@ public class Grid : MonoBehaviour
 			
 			if(empty)
 			{
-				foreach (Transform cell in grid)
-				{
-					if (!PrimSet.Contains(cell))
-					{
-						cell.GetComponent<Renderer>().material.color = Color.black;
-						cell.transform.Translate(0, 1, 0);
-						
-					}
-				}
-				PrimSet[PrimSet.Count - 1].GetComponent<Renderer>().material.color = Color.red;
+                //foreach (Transform cell in grid)
+                //{
+                //    if (!PrimSet.Contains(cell))
+                //    {
+                //        cell.GetComponent<Renderer>().material.color = Color.black;
+                //        cell.transform.Translate(0, 1, 0);
+
+                //    }
+                //}
+                for (int x = 0; x < gridSize.x; x++)
+                {
+                    for (int z = 0; z < gridSize.y; z++)
+                    {
+                        if (!PrimSet.Contains(grid[x, z]))
+                        {
+                            Transform bldg = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z), Quaternion.identity) as Transform;
+                            bldg.transform.Translate(new Vector3(0, 0, 0.321f));
+                        }
+                    }
+                }
+
+
+                PrimSet[PrimSet.Count - 1].GetComponent<Renderer>().material.color = Color.red;
 				return;
 			}
 
@@ -178,7 +193,8 @@ public class Grid : MonoBehaviour
 		} while (next.GetComponent<Cell>().AdjacentsOpened >= 2);
 
 
-		next.GetComponent<Renderer>().material.color = Color.yellow;
+		//next.GetComponent<Renderer>().material.color = Color.yellow;
+        next.GetComponent<Renderer>().material.mainTexture = roadText;
 		PrimSet.Add(next);
 		FindNext(next);
 
@@ -192,24 +208,23 @@ public class Grid : MonoBehaviour
 			{
 				if (x == 0)
 				{
-					Transform wall = Instantiate(BoundaryPrefab, new Vector3(x - 1, 0, z), Quaternion.identity) as Transform;
-					wall.GetComponent<Renderer>().material.color = Color.black;
+					Transform wall = Instantiate(bldgPrefab, new Vector3(x - 1, 1.15f, z), Quaternion.identity) as Transform;
+					//wall.GetComponent<Renderer>().material.color = Color.black;
 				}
 
 				if(x == gridSize.x - 1)
 				{
-					Transform wall = Instantiate(BoundaryPrefab, new Vector3(x + 1, 0, z), Quaternion.identity) as Transform;
-					wall.GetComponent<Renderer>().material.color = Color.black;
+					Transform wall = Instantiate(bldgPrefab, new Vector3(x + 1, 1.15f, z), Quaternion.identity) as Transform;
 				}
 				if (z == 0)
 				{
-					Transform wall = Instantiate(BoundaryPrefab, new Vector3(x, 0, z -1), Quaternion.identity) as Transform;
-					wall.GetComponent<Renderer>().material.color = Color.black;
+					Transform wall = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z -1), Quaternion.identity) as Transform;
+					//wall.GetComponent<Renderer>().material.color = Color.black;
 				}
 				if (z == gridSize.y - 1)
 				{
-					Transform wall = Instantiate(BoundaryPrefab, new Vector3(x, 0, z + 1), Quaternion.identity) as Transform;
-					wall.GetComponent<Renderer>().material.color = Color.black;
+					Transform wall = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z + 1), Quaternion.identity) as Transform;
+					//wall.GetComponent<Renderer>().material.color = Color.black;
 				}
 			}
 		}
