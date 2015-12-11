@@ -226,7 +226,7 @@ public class Grid : MonoBehaviour
 				if (z == 0)
 				{
                     Vector3 posForBldg = grid[x, z].transform.position;
-                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 1 -0.57f), Quaternion.identity) as Transform;
+                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 1 -0.43f), Quaternion.identity) as Transform;
                     wall.gameObject.name = "Boundary";
                     //wall.GetComponent<Renderer>().material.color = Color.black;
                 }
