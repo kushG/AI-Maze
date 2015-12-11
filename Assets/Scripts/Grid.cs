@@ -24,9 +24,9 @@ public class Grid : MonoBehaviour
 		SetAdjacents();
 		SetupWeightLists();
 		StartPrim();
-		SetBoundaryWalls();
-		
-	}
+        SetBoundaryWalls();
+
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -161,26 +161,28 @@ public class Grid : MonoBehaviour
 			
 			if(empty)
 			{
-                //foreach (Transform cell in grid)
-                //{
-                //    if (!PrimSet.Contains(cell))
-                //    {
-                //        cell.GetComponent<Renderer>().material.color = Color.black;
-                //        cell.transform.Translate(0, 1, 0);
-
-                //    }
-                //}
-                for (int x = 0; x < gridSize.x; x++)
+                foreach (Transform cell in grid)
                 {
-                    for (int z = 0; z < gridSize.y; z++)
+                    if (!PrimSet.Contains(cell))
                     {
-                        if (!PrimSet.Contains(grid[x, z]))
-                        {
-                            Transform bldg = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z), Quaternion.identity) as Transform;
-                            bldg.transform.Translate(new Vector3(0, 0, 0.321f));
-                        }
+                        cell.GetComponent<Renderer>().material.color = Color.black;
+                        //cell.transform.Translate(0, 1, 0);
+                        Vector3 posForBldg = cell.transform.position;
+                        Transform bldg = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+
                     }
                 }
+                //for (int x = 0; x < gridSize.x; x++)
+                //{
+                //    for (int z = 0; z < gridSize.y; z++)
+                //    {
+                //        if (!PrimSet.Contains(grid[x, z]))
+                //        {
+                //            Transform bldg = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z), Quaternion.identity) as Transform;
+                //            bldg.transform.Translate(new Vector3(0, 0, 0.321f));
+                //        }
+                //    }
+                //}
 
 
                 PrimSet[PrimSet.Count - 1].GetComponent<Renderer>().material.color = Color.red;
@@ -208,31 +210,40 @@ public class Grid : MonoBehaviour
 			{
 				if (x == 0)
 				{
-					Transform wall = Instantiate(bldgPrefab, new Vector3(x - 1, 1.15f, z), Quaternion.identity) as Transform;
+                    Vector3 posForBldg = grid[x, z].transform.position;
+                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x - 1, posForBldg.y - 0.26f, posForBldg.z -0.57f), Quaternion.identity) as Transform;
+                    
+                    wall.gameObject.name = "Boundary";
 					//wall.GetComponent<Renderer>().material.color = Color.black;
 				}
 
 				if(x == gridSize.x - 1)
 				{
-					Transform wall = Instantiate(bldgPrefab, new Vector3(x + 1, 1.15f, z), Quaternion.identity) as Transform;
-				}
+                    Vector3 posForBldg = grid[x, z].transform.position;
+                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x + 1, posForBldg.y -0.26f, posForBldg.z - 0.57f), Quaternion.identity) as Transform;
+                    wall.gameObject.name = "Boundary";
+                }
 				if (z == 0)
 				{
-					Transform wall = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z -1), Quaternion.identity) as Transform;
-					//wall.GetComponent<Renderer>().material.color = Color.black;
-				}
+                    Vector3 posForBldg = grid[x, z].transform.position;
+                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 1 -0.57f), Quaternion.identity) as Transform;
+                    wall.gameObject.name = "Boundary";
+                    //wall.GetComponent<Renderer>().material.color = Color.black;
+                }
 				if (z == gridSize.y - 1)
 				{
-					Transform wall = Instantiate(bldgPrefab, new Vector3(x, 1.15f, z + 1), Quaternion.identity) as Transform;
-					//wall.GetComponent<Renderer>().material.color = Color.black;
-				}
+                    Vector3 posForBldg = grid[x, z].transform.position;
+                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z + 1 - 0.57f), Quaternion.identity) as Transform;
+                    wall.gameObject.name = "Boundary";
+                    //wall.GetComponent<Renderer>().material.color = Color.black;
+                }
 			}
 		}
 	}
 
 	void SpawnPlayer()
 	{
-		Instantiate(FPSController, new Vector3(0,1,0), Quaternion.identity);
+		Instantiate(FPSController);
 		Camera.main.enabled = false;
 		spawned = true;
 	}
