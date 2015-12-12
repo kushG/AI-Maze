@@ -8,6 +8,7 @@ public class Grid : MonoBehaviour
 	public Vector2 gridSize;
 	public List<List<Transform>> WeightSet;
 	List<Transform> PrimSet;
+    public List<Transform> NonPrimSet;
 	List<Cell> PrimSetCell;
 	public Transform CellPrefab;
 	public Transform BoundaryPrefab;
@@ -16,16 +17,27 @@ public class Grid : MonoBehaviour
     public Texture roadText;
     Transform[,] grid;
 	bool spawned = false;
+    public GameObject buildingCells;
+    public List<Transform> buildingPrefabs;
+    public Transform bldg1;
+    public Transform bldg2;
+    public Transform bldg3;
+    public List<int> PuzzleCube;
+    public Texture number1;
+    public Texture number2;
+    public Texture number3;
 
-	// Use this for initialization
-	void Start()
+
+    // Use this for initialization
+    void Start()
 	{
 		InitializeGrid();
 		SetAdjacents();
 		SetupWeightLists();
 		StartPrim();
         SetBoundaryWalls();
-
+        AddBuildings();
+        AddPuzzle();
     }
 
 	// Update is called once per frame
@@ -35,6 +47,27 @@ public class Grid : MonoBehaviour
 		{
 			SpawnPlayer();
 		}
+
+        //// Make atleast 3 doors operable
+        //GameObject[] buildings = GameObject.FindGameObjectsWithTag("Building");
+
+        //GameObject door1 = buildings[(buildings.Length - 1) / 3].transform.FindChild("Door").gameObject;
+        //door1.AddComponent<Door>();
+        //door1.GetComponent<Door>().keyNo = 1;
+
+        //GameObject door2 = buildings[((buildings.Length - 1) / 3) + 3].transform.FindChild("Door").gameObject;
+        //door1.AddComponent<Door>();
+        //door1.GetComponent<Door>().keyNo = 2;
+
+        //GameObject door3 = buildings[((buildings.Length - 1) / 3) + 2*3].transform.FindChild("Door").gameObject;
+        //door1.AddComponent<Door>();
+        //door1.GetComponent<Door>().keyNo = 3;
+
+
+        //foreach (GameObject bldg in buildings)
+        //{
+
+        //}
 
 	}
 
@@ -165,11 +198,16 @@ public class Grid : MonoBehaviour
                 {
                     if (!PrimSet.Contains(cell))
                     {
+                        NonPrimSet.Add(cell);
+
+
+
                         cell.GetComponent<Renderer>().material.color = Color.black;
                         //cell.transform.Translate(0, 1, 0);
-                        Vector3 posForBldg = cell.transform.position;
-                        Transform bldg = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
-
+                        //Vector3 posForBldg = cell.transform.position;
+                        //Transform bldg = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+                        //bldg.parent = buildingCells.transform;
+                        
                     }
                 }
                 //for (int x = 0; x < gridSize.x; x++)
@@ -241,7 +279,67 @@ public class Grid : MonoBehaviour
 		}
 	}
 
-	void SpawnPlayer()
+    void AddBuildings()
+    {
+        for(int i=0; i<NonPrimSet.Count; i++)
+        {
+            Vector3 posForBldg = NonPrimSet[i].transform.position;
+            if (i == NonPrimSet.Count / 3)
+            {
+                Transform bldg = Instantiate(bldg1, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+                bldg.parent = buildingCells.transform;
+            }
+            else if(i == (NonPrimSet.Count * 2) / 3)
+            {
+                Transform bldg = Instantiate(bldg2, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+                bldg.parent = buildingCells.transform;
+            }
+            else if (i == (NonPrimSet.Count * 3) / 3)
+            {
+                Transform bldg = Instantiate(bldg3, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+                bldg.parent = buildingCells.transform;
+            }
+            else
+            {
+                Transform bldg = Instantiate(buildingPrefabs[Random.Range(0, buildingPrefabs.Count)], new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
+                bldg.parent = buildingCells.transform;
+            }
+
+        }
+    }
+
+    void AddPuzzle()
+    {
+        int count = 0;
+        int cellNo = Random.Range(0, PrimSet.Count);
+        while (count < 3)
+        {
+            while (PuzzleCube.Contains(cellNo))
+            {
+                cellNo = Random.Range(0, PrimSet.Count);
+            }
+            PuzzleCube.Add(cellNo);
+            PrimSet[cellNo].GetComponent<Renderer>().material.color = Color.cyan;
+            count++;
+        }
+        PrimSet[PuzzleCube[0]].GetComponent<Renderer>().material.mainTexture = number1;
+        PrimSet[PuzzleCube[0]].gameObject.AddComponent<PuzzleCollider>();
+        PrimSet[PuzzleCube[0]].GetComponent<PuzzleCollider>().keyno = 1;
+        PrimSet[PuzzleCube[0]].rotation = Quaternion.Euler(0, 0, 180);
+
+        PrimSet[PuzzleCube[1]].GetComponent<Renderer>().material.mainTexture = number2;
+        PrimSet[PuzzleCube[1]].gameObject.AddComponent<PuzzleCollider>();
+        PrimSet[PuzzleCube[1]].GetComponent<PuzzleCollider>().keyno = 2;
+        PrimSet[PuzzleCube[1]].rotation = Quaternion.Euler(0, 0, 180);
+
+        PrimSet[PuzzleCube[2]].GetComponent<Renderer>().material.mainTexture = number3;
+        PrimSet[PuzzleCube[2]].gameObject.AddComponent<PuzzleCollider>();
+        PrimSet[PuzzleCube[2]].GetComponent<PuzzleCollider>().keyno = 3;
+        PrimSet[PuzzleCube[2]].rotation = Quaternion.Euler(0, 0, 180);
+
+    }
+
+    void SpawnPlayer()
 	{
 		Instantiate(FPSController);
 		Camera.main.enabled = false;
