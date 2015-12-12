@@ -227,7 +227,6 @@ public class Grid : MonoBehaviour
 				return;
 			}
 
-			Debug.Log(lowestWeight);
 			next = WeightSet[lowestWeight][0];
 			WeightSet[lowestWeight].Remove(next);			
 		} while (next.GetComponent<Cell>().AdjacentsOpened >= 2);

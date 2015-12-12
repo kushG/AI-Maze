@@ -45,8 +45,10 @@ public class Door : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        if(col.collider.gameObject.tag == "Player")
+		Debug.Log(col.gameObject.name);
+        if(col.gameObject.tag == "Player")
         {
+			Debug.Log("Player & Door");
             keyFromPlayer = col.collider.gameObject.GetComponent<KeyDoor>().keyNo;
             startUpdate = true;
         }

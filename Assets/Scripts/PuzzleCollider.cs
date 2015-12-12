@@ -16,8 +16,10 @@ public class PuzzleCollider : MonoBehaviour {
     void OnCollisionEnter(Collision col)
     {
         Debug.Log("Puzzle");
-        if(col.collider.gameObject.tag == "Player")
-        {
+		Debug.Log(col.collider.gameObject.tag);
+		Debug.Log(col.gameObject.tag);
+        if(col.gameObject.tag == "Player")
+        { 
             Debug.Log("Puzzle Collider");
             GameObject player = col.collider.gameObject;
             player.GetComponent<KeyDoor>().keyNo = keyno;
