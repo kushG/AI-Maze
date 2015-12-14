@@ -293,7 +293,7 @@ public class Grid : MonoBehaviour
                 Transform bldg = Instantiate(bldg2, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
                 bldg.parent = buildingCells.transform;
             }
-            else if (i == (NonPrimSet.Count * 3) / 3)
+            else if (i == ((NonPrimSet.Count * 3) / 3) - 1)
             {
                 Transform bldg = Instantiate(bldg3, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 0.43f), Quaternion.identity) as Transform;
                 bldg.parent = buildingCells.transform;

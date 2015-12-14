@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
 	public float speed = 0.5f;
+    public float camMoveSpeed = 0.3f;
+    public GameObject Cam;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -31,5 +34,7 @@ public class PlayerMovement : MonoBehaviour {
         {
 			transform.Translate(speed * Time.deltaTime, 0, 0);
 		}
+
+        Cam.transform.Rotate(-Input.GetAxis("Mouse Y") * camMoveSpeed * Time.deltaTime, Input.GetAxis("Mouse X") * camMoveSpeed * Time.deltaTime, 0);
 	}
 }
