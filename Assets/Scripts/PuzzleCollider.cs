@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PuzzleCollider : MonoBehaviour {
     public int keyno = 0;
@@ -15,14 +16,12 @@ public class PuzzleCollider : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        Debug.Log("Puzzle");
-		Debug.Log(col.collider.gameObject.tag);
-		Debug.Log(col.gameObject.tag);
+
         if(col.gameObject.tag == "Player")
         { 
-            Debug.Log("Puzzle Collider");
             GameObject player = col.collider.gameObject;
             player.GetComponent<KeyDoor>().keyNo = keyno;
+			GameObject.Find("Key").GetComponent<Text>().text = " Key No : " + keyno;
         }
     }
 }

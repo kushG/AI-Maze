@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class Grid : MonoBehaviour
 {
 
@@ -248,7 +249,7 @@ public class Grid : MonoBehaviour
 				if (x == 0)
 				{
                     Vector3 posForBldg = grid[x, z].transform.position;
-                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x - 1, posForBldg.y - 0.26f, posForBldg.z -0.57f), Quaternion.identity) as Transform;
+                    Transform wall = Instantiate(buildingPrefabs[Random.Range(0, buildingPrefabs.Count)], new Vector3(posForBldg.x - 1, posForBldg.y - 0.26f, posForBldg.z -0.57f), Quaternion.identity) as Transform;
                     
                     wall.gameObject.name = "Boundary";
 					//wall.GetComponent<Renderer>().material.color = Color.black;
@@ -257,20 +258,20 @@ public class Grid : MonoBehaviour
 				if(x == gridSize.x - 1)
 				{
                     Vector3 posForBldg = grid[x, z].transform.position;
-                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x + 1, posForBldg.y -0.26f, posForBldg.z - 0.57f), Quaternion.identity) as Transform;
+                    Transform wall = Instantiate(buildingPrefabs[Random.Range(0, buildingPrefabs.Count)], new Vector3(posForBldg.x + 1, posForBldg.y -0.26f, posForBldg.z - 0.57f), Quaternion.identity) as Transform;
                     wall.gameObject.name = "Boundary";
                 }
 				if (z == 0)
 				{
                     Vector3 posForBldg = grid[x, z].transform.position;
-                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 1 -0.43f), Quaternion.identity) as Transform;
+                    Transform wall = Instantiate(buildingPrefabs[Random.Range(0, buildingPrefabs.Count)], new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z - 1 -0.43f), Quaternion.identity) as Transform;
                     wall.gameObject.name = "Boundary";
                     //wall.GetComponent<Renderer>().material.color = Color.black;
                 }
 				if (z == gridSize.y - 1)
 				{
                     Vector3 posForBldg = grid[x, z].transform.position;
-                    Transform wall = Instantiate(bldgPrefab, new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z + 1 - 0.57f), Quaternion.identity) as Transform;
+                    Transform wall = Instantiate(buildingPrefabs[Random.Range(0, buildingPrefabs.Count)], new Vector3(posForBldg.x, posForBldg.y - 0.26f, posForBldg.z + 1 - 0.57f), Quaternion.identity) as Transform;
                     wall.gameObject.name = "Boundary";
                     //wall.GetComponent<Renderer>().material.color = Color.black;
                 }
