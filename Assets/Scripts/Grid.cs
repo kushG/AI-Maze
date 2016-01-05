@@ -8,9 +8,9 @@ public class Grid : MonoBehaviour
 
 	public Vector2 gridSize;
 	public List<List<Transform>> WeightSet;
-	List<Transform> PrimSet;
+	public List<Transform> PrimSet;
     public List<Transform> NonPrimSet;
-	List<Cell> PrimSetCell;
+	public List<Cell> PrimSetCell;
 	public Transform CellPrefab;
 	public Transform BoundaryPrefab;
 	public Transform FPSController;
@@ -29,6 +29,9 @@ public class Grid : MonoBehaviour
     public Texture number3;
 
 
+    public List<Cell> splitCells;
+    public bool pathComplete = false;
+    public Transform lockedDoorPrefab;
     // Use this for initialization
     void Start()
 	{
@@ -38,7 +41,9 @@ public class Grid : MonoBehaviour
 		StartPrim();
         SetBoundaryWalls();
         AddBuildings();
-        AddPuzzle();
+        //AddPuzzle();        
+        //StartTraversal();
+        //AddLockedDoorBldgs();
     }
 
 	// Update is called once per frame
@@ -81,6 +86,7 @@ public class Grid : MonoBehaviour
 			for (int z = 0; z < gridSize.y; z++)
 			{
 				grid[x, z] = Instantiate(CellPrefab, new Vector3(x, 0, z), Quaternion.identity) as Transform;
+                grid[x, z].name = x + "," + z;
 				int randomWeight = Random.Range(1, 10);
 				//grid[x, z].GetComponent<GUIText>().text = randomWeight.ToString();
 				grid[x, z].GetComponent<Cell>().weight = randomWeight;
@@ -345,5 +351,89 @@ public class Grid : MonoBehaviour
 		Camera.main.enabled = false;
 		spawned = true;
 	}
+
+    void StartTraversal()
+    {
+        int a = 1;
+        while(!PrimSet.Contains((grid[(int)gridSize.x -1, (int)gridSize.y - a])))
+        {
+            a++;
+        }
+
+        grid[(int)gridSize.x - 1, (int)gridSize.y - a].GetComponent<Cell>().isGoal = true;
+        grid[(int)gridSize.x - 1, (int)gridSize.y - a].GetComponent<Renderer>().material.color = Color.magenta;
+        CheckAdjacents(grid[0, 0].GetComponent<Cell>());
+
+    }
+    void CheckAdjacents(Cell currentCell)
+    {
+        if (pathComplete)
+        {
+            return;
+        }
+        int adjCount = 0;
+        currentCell.isVisited = true;
+        currentCell.transform.GetComponent<Renderer>().material.color = Color.yellow;
+
+
+        // Count number of adjacents in Primset
+        foreach (Transform adj in currentCell.adjacents)
+        {            
+            if(PrimSet.Contains(adj) && adj.GetComponent<Cell>().isVisited == false)
+            {
+                adjCount++;
+            }
+        }
+
+        currentCell.PrimAdjacents = adjCount;
+        Debug.Log(currentCell.PrimAdjacents);
+        
+
+        // Split in traverse direction
+        if (adjCount > 1)
+        {
+            splitCells.Add(currentCell);
+            Debug.Log("Add");
+            currentCell.splitCount = adjCount;
+        }
+
+
+        // Check for all the adjacents
+        foreach (Transform adj in currentCell.adjacents)
+        {
+            if (adj.GetComponent<Cell>().isGoal)
+            {
+                // We have reached the end state. no further traversal
+                pathComplete = true;
+                  break;
+            }
+
+            // Traverse each adjacent cell untill it reaches a dead end or Goal
+            if (PrimSet.Contains(adj) && adj.GetComponent<Cell>().isVisited == false)
+            {
+                CheckAdjacents(adj.GetComponent<Cell>());
+            }            
+
+        }
+
+        //If none of the adjacents are useful(Dead-End)
+        splitCells[(splitCells.Count - 1)].splitCount--;
+        if (splitCells[(splitCells.Count - 1)].splitCount == 0)
+        {
+            splitCells.RemoveAt(splitCells.Count - 1);
+        }
+        CheckAdjacents(splitCells[(splitCells.Count - 1)]);
+    }
+
+    void AddLockedDoorBldgs()
+    {
+        foreach(Cell cell in splitCells)
+        {
+            if(!(cell.transform.position.x ==0 && cell.transform.position.z == 0))
+            {
+                Transform lockedDoorCell = Instantiate(lockedDoorPrefab, new Vector3(cell.transform.position.x, cell.transform.position.y - 0.26f, cell.transform.position.z - 0.43f), Quaternion.identity) as Transform;
+            }            
+        }
+    }
 
 }
